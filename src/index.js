@@ -1,14 +1,6 @@
 // @ts-check
 import './styles.scss';
 import 'bootstrap';
+import app from './app.js'
 
-export default class Example {
-  constructor(element) {
-    this.element = element;
-  }
-
-  init() {
-    this.element.textContent = '';
-    console.log('');
-  }
-}
+app();
