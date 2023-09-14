@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import 'bootstrap';
 import watch from './view.js';
 import axios from 'axios';
-
+import parse from './parser.js';
 
 
 export default () => {
@@ -50,8 +50,25 @@ export default () => {
             })
             .then((response) => {
                 const data = response.data;
-            })
-    })
-
-}
-
+                const parsingResults = parse(data);
+                setState(watchedState, {
+                    form: {
+                      ...watchedState.form, // Сохраняем текущее состояние
+                      processState: 'success', 
+                      response: parsingResults, //  Добавляем распарсенные данные
+                    },
+                    feeds: [...watchedState.feeds, { url }], // Добавляем новый URL в feeds
+                  });
+                })
+            .catch((error) => {
+                setState(watchedState, {
+                form: {
+                    ...watchedState.form,
+                    processState: 'error',
+                    errors: error,
+                },
+                });
+            });
+    });
+};         
+            

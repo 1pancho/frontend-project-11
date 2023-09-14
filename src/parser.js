@@ -1,4 +1,4 @@
-const parser = (RSS) => {
+const parse = (RSS) => {
     const newParser = new DOMParser();
     const data = newParser.parseFromString(RSS, 'text/xml');
     const errorNode = data.querySelector('parsererror');
@@ -21,8 +21,9 @@ const parser = (RSS) => {
             description: post.querySelector('description'),
             link: post.querySelector('link'),
         }
+    });
 
-    })
+   return { flowTitle, flowDescription, posts };
+};
 
-    return posts;
-}
+export default parse;
