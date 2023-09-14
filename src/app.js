@@ -2,6 +2,8 @@
 import * as yup from 'yup';
 import 'bootstrap';
 import watch from './view.js';
+import axios from 'axios';
+
 
 
 export default () => {
@@ -40,10 +42,15 @@ export default () => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const url = formData.get('url');
-        const alreadyAddedLinks = state.feeds.map((feed) => {
-            
-        })
-        const validatedUrl = validateUrl(url, feeds);
+        const alreadyAddedLinks = state.feeds.map((feed) => feed.url);
+
+        const validatedUrl = validateUrl(url, alreadyAddedLinks)
+            .then(() => {
+                axios.get('https://buzzfeed.com/world.xml')
+            })
+            .then((response) => {
+                const data = response.data;
+            })
     })
 
 }
