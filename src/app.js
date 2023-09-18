@@ -4,25 +4,29 @@ import 'bootstrap';
 import watch from './view.js';
 import axios from 'axios';
 import parse from './parser.js';
+import _ from 'lodash';
 
 
 export default () => {
     const state = {
+        feeds: [],        // Массив лент (объекты с информацией о лентах)
+        posts: [],        // Массив постов (объекты с информацией о постах)
         form: {
-            field: '',
-            processState: '',
-            response: {},
-            errors: {},
-            isValid: null,
+          error: null,    // Ошибка формы, если есть
+          valid: false,   // Валидность формы (по умолчанию невалидна)
         },
-        feeds: [],
-    };
+        modalPost: null,  // Идентификатор отображаемого модального поста (по умолчанию null)
+        viewPosts: [],    // Массив идентификаторов просматриваемых постов
+        load: 'ok',       // Состояние загрузки (по умолчанию 'ok')
+      };
 
     const elements = {
         form: document.querySelector('.rss-form'),
         input: document.getElementById('url-input'),
         submit: document.querySelector('button[type="submit"]'),
         feedback: document.querySelector('.feedback'),
+        feedsDisplay: document.querySelector('feeds'),
+        postsDisplay: document.querySelector('posts'),
     };
 
     const validateUrl = (url, feeds) => {
@@ -35,8 +39,11 @@ export default () => {
         return schema.validate(url);
     };
 
+    const errorHandler = (error) => {
 
-    const watchedState = watch(state, element);
+    };
+
+    const watchedState = watch(state, elements);
 
     elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -44,30 +51,36 @@ export default () => {
         const url = formData.get('url');
         const alreadyAddedLinks = state.feeds.map((feed) => feed.url);
 
-        const validatedUrl = validateUrl(url, alreadyAddedLinks)
+        validateUrl(url, alreadyAddedLinks)
             .then(() => {
-                axios.get('https://buzzfeed.com/world.xml')
+                watchedState.load = 'loading';
+                watchedState.form.valid = true;
+                return axios.get(url)
             })
             .then((response) => {
                 const data = response.data;
                 const parsingResults = parse(data);
-                setState(watchedState, {
-                    form: {
-                      ...watchedState.form, // Сохраняем текущее состояние
-                      processState: 'success', 
-                      response: parsingResults, //  Добавляем распарсенные данные
-                    },
-                    feeds: [...watchedState.feeds, { url }], // Добавляем новый URL в feeds
-                  });
-                })
-            .catch((error) => {
-                setState(watchedState, {
-                form: {
-                    ...watchedState.form,
-                    processState: 'error',
-                    errors: error,
-                },
-                });
+                const { flowTitle, flowDescription, posts } = parsingResults;
+                const feed = {
+                    url,
+                    id: _.uniqueId(),
+                    title: flowTitle,
+                    description: flowDescription,
+                };
+
+                const post = posts.map((item) => ({
+                    ...item,
+                    feedId: feed.id,
+                    postId: _.uniqueId()
+                }))
+
+                watchedState.feeds.unshift(feed);
+                watchedState.posts.unshift(...post);
+                watchedState.load = 'ok';
+                watchedState.form = { error: null, valid: true };
+            })
+            .catch((error) =>{
+                errorHandler(error);
             });
     });
 };         
