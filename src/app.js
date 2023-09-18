@@ -17,7 +17,7 @@ export default () => {
         },
         modalPost: null,  // Идентификатор отображаемого модального поста (по умолчанию null)
         viewPosts: [],    // Массив идентификаторов просматриваемых постов
-        load: 'ok',       // Состояние загрузки (по умолчанию 'ok')
+        loadingProcess: 'idle',       // Состояние загрузки (по умолчанию 'ok')
       };
 
     const elements = {
@@ -39,10 +39,18 @@ export default () => {
         return schema.validate(url);
     };
 
-    const errorHandler = (error) => {
+    // const errorHandler = (error) => {
+    //     elements.feedbackElement.textContent = error.message;
+    // };
 
-    };
 
+    const getProxyUrl = (url) => {
+        const href = new URL('/get', 'https://allorigins.hexlet.app');
+        href .searchParams.set('url', url);
+        href .searchParams.set('disableCache', 'true');
+        return href;
+      };
+        
     const watchedState = watch(state, elements);
 
     elements.form.addEventListener('submit', (e) => {
@@ -53,32 +61,32 @@ export default () => {
 
         validateUrl(url, alreadyAddedLinks)
             .then(() => {
-                watchedState.load = 'loading';
+                watchedState.loadingProcess = 'loading';
                 watchedState.form.valid = true;
-                return axios.get(url)
+                return axios.get(getProxyUrl(url));
             })
-            .then((response) => {
-                const data = response.data;
-                const parsingResults = parse(data);
-                const { flowTitle, flowDescription, posts } = parsingResults;
-                const feed = {
-                    url,
-                    id: _.uniqueId(),
-                    title: flowTitle,
-                    description: flowDescription,
-                };
+            // .then((response) => {
+            //     const data = response.data;
+            //     const parsingResults = parse(data);
+            //     const { flowTitle, flowDescription, posts } = parsingResults;
+            //     const feed = {
+            //         url,
+            //         id: _.uniqueId(),
+            //         title: flowTitle,
+            //         description: flowDescription,
+            //     };
 
-                const post = posts.map((item) => ({
-                    ...item,
-                    feedId: feed.id,
-                    postId: _.uniqueId()
-                }))
+            //     const post = posts.map((item) => ({
+            //         ...item,
+            //         feedId: feed.id,
+            //         postId: _.uniqueId()
+            //     }))
 
-                watchedState.feeds.unshift(feed);
-                watchedState.posts.unshift(...post);
-                watchedState.load = 'ok';
-                watchedState.form = { error: null, valid: true };
-            })
+            //     watchedState.feeds.unshift(feed);
+            //     watchedState.posts.unshift(...post);
+            //     watchedState.loadingProcess = 'idle';
+            //     watchedState.form = { error: null, valid: true };
+            // })
             .catch((error) =>{
                 errorHandler(error);
             });

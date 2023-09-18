@@ -11,7 +11,7 @@ const parse = (RSS) => {
     const flowTitle = titleNode ? titleNode.textContent.trim() : '';
 
     const descriptionNode = data.querySelector('channel > description');
-    const flowdescription = descriptionNode ? descriptionNode.textContent.trim() : '';
+    const flowDescription = descriptionNode ? descriptionNode.textContent.trim() : '';
 
     const itemElements = data.querySelectorAll('item');
 
