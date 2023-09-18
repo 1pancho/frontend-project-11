@@ -88,8 +88,7 @@ export default () => {
             //     watchedState.form = { error: null, valid: true };
             // })
             .catch((error) =>{
-                errorHandler(error);
+                watchedState.form.error = error;
             });
     });
 };         
-            
