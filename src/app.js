@@ -29,8 +29,8 @@ export default () => {
         input: document.getElementById('url-input'),
         submit: document.querySelector('button[type="submit"]'),
         feedback: document.querySelector('.feedback'),
-        feedsDisplay: document.querySelector('feeds'),
-        postsDisplay: document.querySelector('posts'),
+        feedsDisplay: document.querySelector('.feeds'),
+        postsDisplay: document.querySelector('.posts'),
     };
 
     const i18n = i18next.createInstance();
@@ -103,10 +103,10 @@ export default () => {
                 return axios.get(getProxyUrl(url));
             })
             .then((response) => {
-                const data = response.data;
-                // console.log(data)
+                const data = response.data.contents;
+                // console.log(data.contents)
                 const parsingResults = parse(data);
-                console.log(parsingResults)
+                // console.log(parsingResults)
                 const { flowTitle, flowDescription, posts } = parsingResults;
                 const feed = {
                     url,
@@ -121,8 +121,12 @@ export default () => {
                     postId: _.uniqueId()
                 }))
 
-                watchedState.feeds.unshift(feed);
-                watchedState.posts.unshift(...post);
+                // console.group(feed, post);
+
+                watchedState.feeds.push(feed);
+                watchedState.posts.push(post);
+                console.group(state.feeds, state.posts)
+
                 watchedState.loadingProcess = 'idle';
                 watchedState.form = { error: null, valid: true };
             })
