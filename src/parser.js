@@ -20,8 +20,8 @@ const parse = (RSS) => {
     const posts = Array.from(itemElements).map((post) => {
         return {
             title: post.querySelector('title').textContent.trim(),
-            description: post.querySelector('description'),
-            link: post.querySelector('link'),
+            description: post.querySelector('description').textContent.trim(),
+            link: post.querySelector('link').textContent.trim(),
         }
     });
     console.log({ flowTitle, flowDescription, posts })

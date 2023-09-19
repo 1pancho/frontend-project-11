@@ -108,6 +108,7 @@ export default () => {
                 const parsingResults = parse(data);
                 // console.log(parsingResults)
                 const { flowTitle, flowDescription, posts } = parsingResults;
+                // console.log(posts)
                 const feed = {
                     url,
                     id: _.uniqueId(),
@@ -118,14 +119,18 @@ export default () => {
                 const post = posts.map((item) => ({
                     ...item,
                     feedId: feed.id,
-                    postId: _.uniqueId()
-                }))
+                    id: _.uniqueId(),
+                  }));
+                console.group(post, posts);
+
+
 
                 // console.group(feed, post);
 
-                watchedState.feeds.push(feed);
-                watchedState.posts.push(post);
-                console.group(state.feeds, state.posts)
+                watchedState.feeds.unshift(feed);
+                watchedState.posts.unshift(...post);
+                
+          
 
                 watchedState.loadingProcess = 'idle';
                 watchedState.form = { error: null, valid: true };

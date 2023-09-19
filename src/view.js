@@ -19,6 +19,8 @@ const handleForm = (state, elements, i18n) => {
 };
 
 const handleFeeds = (state, elements) => {
+    console.log('Feeds:', state.feeds); // Вывод состояния feeds
+    console.log('Posts:', state.posts);
     elements.feedsDisplay.innerHTML = '';
     const feedsCard = document.createElement('div');
 
@@ -33,6 +35,7 @@ const handleFeeds = (state, elements) => {
 
     feedsList = document.createElement('ul');
     feedsList.classList.add('list-group', 'border-0','rounded-0');
+    feedsCard.append(feedsList);
 
     state.feeds.forEach((feed) => {
         const feedContainer = document.createElement('li');
@@ -54,8 +57,11 @@ const handleFeeds = (state, elements) => {
 };
 
 const handlePosts = (state, elements) => {
+     console.log('Feeds:', state.feeds); // Вывод состояния feeds
+    console.log('Posts:', state.posts);
     elements.postsDisplay.innerHTML = '';
-
+    console.log('Feeds:', state.feeds); // Вывод состояния feeds
+    console.log('Posts:', state.posts);
     const postsCard = document.createElement('div');
     postsCard.classList.add('card', 'border-0');
 
@@ -70,6 +76,7 @@ const handlePosts = (state, elements) => {
 
     const postsList = document.createElement('ul');
     postsList.classList.add('list-group', 'border-0', 'rounded-0');
+    postsCard.append(postsList);
 
     state.posts.forEach((post) => {
         const postContainer = document.createElement('li');
