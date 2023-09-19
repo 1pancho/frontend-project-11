@@ -1,11 +1,15 @@
 /* eslint-disable no-param-reassign */
 import onChange from 'on-change';
 
-const handleForm = (state, elements) => {
+const handleForm = (state, elements, i18n) => {
     if (state.form.error) {
         elements.feedback.classList.add('text-danger');
         elements.feedback.classList.remove('text-succes');
-        elements.feedback.textContent = state.form.error;
+        const errorMessage = i18n.t(state.form.error.message.key);
+        elements.feedback.textContent = errorMessage;
+        // console.log('Error key:', state.form.error.message.key);
+
+
     } 
     if (state.form.isValid) {
         elements.input.classList.remove('is-invalid');
@@ -96,11 +100,11 @@ const handleForm = (state, elements) => {
 
 // }
 
-export default (state, elements) => {
+export default (state, elements, i18n) => {
     const watchedState = onChange(state, (path) => {
         switch (path) {
             case 'form': {
-                handleForm(state, elements);
+                handleForm(state, elements, i18n);
                 break;
             }
             // case 'feeds': {
