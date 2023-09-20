@@ -8,8 +8,6 @@ const handleForm = (state, elements, i18n) => {
         const errorMessage = i18n.t(state.form.error.message.key);
         elements.feedback.textContent = errorMessage;
         // console.log('Error key:', state.form.error.message.key);
-
-
     } 
     if (state.form.isValid) {
         elements.input.classList.remove('is-invalid');
@@ -23,6 +21,7 @@ const handleFeeds = (state, elements) => {
     console.log('Posts:', state.posts);
     elements.feedsDisplay.innerHTML = '';
     const feedsCard = document.createElement('div');
+    feedsCard.classList.add('card', 'border-0');
 
     const feedsTitleContainer = document.createElement('div');
     feedsTitleContainer.classList.add('card-body');
@@ -33,7 +32,7 @@ const handleFeeds = (state, elements) => {
     feedsTitle.textContent = 'Фиды'
     feedsTitleContainer.append(feedsTitle);
 
-    feedsList = document.createElement('ul');
+    const feedsList = document.createElement('ul');
     feedsList.classList.add('list-group', 'border-0','rounded-0');
     feedsCard.append(feedsList);
 
@@ -46,22 +45,20 @@ const handleFeeds = (state, elements) => {
         title.classList.add('h6', 'm-0');
         title.textContent = feed.title;
 
-
         const description = document.createElement('p');
         description.classList.add('m-0', 'small', 'text-black-50');
         description.textContent = feed.description;
         feedContainer.append(title, description);
     });
-    console.log(feedsCard);
+
     elements.feedsDisplay.append(feedsCard);
 };
 
 const handlePosts = (state, elements) => {
-     console.log('Feeds:', state.feeds); // Вывод состояния feeds
-    console.log('Posts:', state.posts);
+    //  console.log('Feeds:', state.feeds); // Вывод состояния feeds
+    // console.log('Posts:', state.posts);
     elements.postsDisplay.innerHTML = '';
-    console.log('Feeds:', state.feeds); // Вывод состояния feeds
-    console.log('Posts:', state.posts);
+
     const postsCard = document.createElement('div');
     postsCard.classList.add('card', 'border-0');
 
@@ -83,8 +80,9 @@ const handlePosts = (state, elements) => {
         postContainer.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
         const link = document.createElement('a');
+        link.textContent = post.title;
         link.setAttribute('href', post.link);
-        link.setAttribute('data-id', post.postId);
+        link.setAttribute('data-id', post.id);
         link.setAttribute('target', '_blank');
 
         if (state.viewPosts.includes(post.postId)) {

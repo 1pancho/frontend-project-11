@@ -11,7 +11,6 @@ import i18next from 'i18next';
 
 
 export default () => {
-
     const state = {
         feeds: [],        // Массив лент (объекты с информацией о лентах)
         posts: [],        // Массив постов (объекты с информацией о постах)
@@ -34,7 +33,6 @@ export default () => {
     };
 
     const i18n = i18next.createInstance();
-
     i18n.init({
         debug: true,
         lng: 'ru',
@@ -60,7 +58,6 @@ export default () => {
         return schema.validate(url);
     };
 
-    
     const errorHandler = (error) => {
         if (error.message.validationError) {
             // console.log(error.message);
@@ -74,20 +71,50 @@ export default () => {
                 error: error
             };
         }
-        
     };
-
+    
 
     const getProxyUrl = (url) => {
         const href = new URL('/get', 'https://allorigins.hexlet.app');
         href .searchParams.set('url', url);
         href .searchParams.set('disableCache', 'true');
         return href;
-      };
-        
+    };
+
+    const postsRecheck = () => {
+        const inner = () => {
+            const promises = state.feeds.map((feed) => {
+                const feedUrl = feed.url;
+                return axios.get(getProxyUrl(feedUrl))
+                    .then((response) => {
+                        const data = response.data.contents;
+                        const parsingResults = parse(data);
+                        const { flowTitle, flowDescription, posts } = parsingResults;
+
+                        const newPosts = _.differenceWith(posts, state.posts, (a, b) => a.title === b.title);
+                        const updatedPosts = newPosts.map((post) => {
+                            post.id = _.uniqueId();
+                            post.feedId = feed.id;
+                            return post;
+                        });
+                        state.posts.unshift(...updatedPosts);
+                        console.log(flowTitle)
+
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            });
+    
+            return Promise.all(promises);
+        };
+    
+        setTimeout(inner, 5000);
+    };
+
     const watchedState = watch(state, elements, i18n);
 
-
+    postsRecheck(state);
 
     elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -99,12 +126,10 @@ export default () => {
             .then(() => {
                 watchedState.loadingProcess = 'loading';
                 watchedState.form.valid = true;
-                // console.log(axios.get(getProxyUrl(url)))
                 return axios.get(getProxyUrl(url));
             })
             .then((response) => {
                 const data = response.data.contents;
-                // console.log(data.contents)
                 const parsingResults = parse(data);
                 // console.log(parsingResults)
                 const { flowTitle, flowDescription, posts } = parsingResults;
@@ -120,17 +145,10 @@ export default () => {
                     ...item,
                     feedId: feed.id,
                     id: _.uniqueId(),
-                  }));
-                console.group(post, posts);
-
-
-
-                // console.group(feed, post);
+                }));
 
                 watchedState.feeds.unshift(feed);
                 watchedState.posts.unshift(...post);
-                
-          
 
                 watchedState.loadingProcess = 'idle';
                 watchedState.form = { error: null, valid: true };
@@ -140,4 +158,9 @@ export default () => {
             });
         })
     });
+
 };         
+
+
+
+
