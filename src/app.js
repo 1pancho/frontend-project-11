@@ -73,10 +73,10 @@ export default () => {
             };
         } else if (error.isParsingError) {
             watchedState.loadingProcess = {
-                valid: false,
+                status: 'failed',
                 error: 'errors.parsingError'
             };
-        } else if (error.message.networkError) {
+        } else if (error.message.isAxiosError) {
             watchedState.loadingProcess = {
                 status: 'failed',
                 error: 'errors.networkError',
