@@ -18,6 +18,10 @@ export default () => {
           error: null,    // Ошибка формы, если есть
           valid: false,   // Валидность формы (по умолчанию невалидна)
         },
+        loadingProcess: {
+            status: 'idle',
+            error: null,
+        },
         modalPost: null,  // Идентификатор отображаемого модального поста (по умолчанию null)
         viewPosts: [],    // Массив идентификаторов просматриваемых постов
         loadingProcess: 'idle',       // Состояние загрузки (по умолчанию 'ok')
@@ -30,8 +34,11 @@ export default () => {
         feedback: document.querySelector('.feedback'),
         feedsDisplay: document.querySelector('.feeds'),
         postsDisplay: document.querySelector('.posts'),
+        modalTitle: document.querySelector('.modal-title'),
+        modalDescription: document.querySelector('.modal-body'),
+        modalFullArticle: document.querySelector('.full-article'),
     };
-
+    
     const i18n = i18next.createInstance();
     i18n.init({
         debug: true,
@@ -82,40 +89,37 @@ export default () => {
     };
 
     const postsRecheck = () => {
-        const inner = () => {
-            const promises = state.feeds.map((feed) => {
+        const promises = state.feeds.map((feed) => {
                 const feedUrl = feed.url;
                 return axios.get(getProxyUrl(feedUrl))
                     .then((response) => {
                         const data = response.data.contents;
+                        // console.log(data);
                         const parsingResults = parse(data);
                         const { flowTitle, flowDescription, posts } = parsingResults;
 
-                        const newPosts = _.differenceWith(posts, state.posts, (a, b) => a.title === b.title);
-                        const updatedPosts = newPosts.map((post) => {
-                            post.id = _.uniqueId();
-                            post.feedId = feed.id;
-                            return post;
-                        });
-                        state.posts.unshift(...updatedPosts);
-                        console.log(flowTitle)
-
-                    })
-                    .catch((error) => {
-                        console.error(error);
+                    const newPosts = _.differenceWith(posts, state.posts, (a, b) => a.title === b.title);
+                    const updatedPosts = newPosts.map((post) => {
+                        post.id = _.uniqueId();
+                        post.feedId = feed.id;
+                        return post;
                     });
-            });
-    
-            return Promise.all(promises);
-        };
-    
-        setTimeout(inner, 5000);
+                    state.posts.unshift(...updatedPosts);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        });
+
+        Promise.all(promises).finally(() => {
+            setTimeout(() => postsRecheck(), 10000);
+        });
     };
 
     const watchedState = watch(state, elements, i18n);
 
     postsRecheck(state);
-
+    console.log(elements.modalFullArticle)
     elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -130,10 +134,11 @@ export default () => {
             })
             .then((response) => {
                 const data = response.data.contents;
+                // console.log(data);
                 const parsingResults = parse(data);
                 // console.log(parsingResults)
                 const { flowTitle, flowDescription, posts } = parsingResults;
-                // console.log(posts)
+                console.log(posts)
                 const feed = {
                     url,
                     id: _.uniqueId(),
@@ -157,8 +162,15 @@ export default () => {
                 errorHandler(error)
             });
         })
+        elements.postsDisplay.addEventListener('click', (e) => {
+            const { target } = e;
+            console.log(target);
+            const id = target.getAttribute('postid');
+            console.log(id);
+            watchedState.modalPost = id;
+            watchedState.viewPosts.push(id);
+        });
     });
-
 };         
 
 

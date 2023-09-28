@@ -4,13 +4,17 @@ import onChange from 'on-change';
 const handleForm = (state, elements, i18n) => {
     if (state.form.error) {
         elements.feedback.classList.add('text-danger');
-        elements.feedback.classList.remove('text-succes');
+        elements.feedback.classList.remove('text-success');
         const errorMessage = i18n.t(state.form.error.message.key);
         elements.feedback.textContent = errorMessage;
         // console.log('Error key:', state.form.error.message.key);
     } 
-    if (state.form.isValid) {
+    if (state.form.valid) {
         elements.input.classList.remove('is-invalid');
+        elements.feedback.classList.remove('text-danger');
+        elements.feedback.classList.add('text-success');
+
+        elements.feedback.textContent = i18n.t('success')
     } else {
         elements.input.classList.add('is-invalid');
     }
@@ -82,7 +86,7 @@ const handlePosts = (state, elements) => {
         const link = document.createElement('a');
         link.textContent = post.title;
         link.setAttribute('href', post.link);
-        link.setAttribute('data-id', post.id);
+        link.setAttribute('postId', post.id);
         link.setAttribute('target', '_blank');
 
         if (state.viewPosts.includes(post.postId)) {
@@ -94,7 +98,7 @@ const handlePosts = (state, elements) => {
         const button = document.createElement('button');
         button.type = 'button';
         button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-        button.setAttribute('data-id', post.postId);
+        button.setAttribute('postId', post.id);
         button.setAttribute('data-bs-toggle', 'modal');
         button.setAttribute('data-bs-target', '#modal');
         button.textContent = 'Просмотр'
@@ -106,7 +110,36 @@ const handlePosts = (state, elements) => {
     elements.postsDisplay.append(postsCard);
 };
 
+const handleLoadingProcess = (state, elements, i18n) => {
+    if (state.loadingProcess.error) {
+        elements.feedback.classList.remove('text-success');
+        elements.feedback.classList.add('text-danger');
+        elements.feedback.textContent = i18n.t(state.loadingProcess.error);
+    }
+    if (state.loadingProcess.status === 'idle') {
+        elements.input.value = '';
+        elements.classList.remove('text-danger');
+        elements.classList.add('text-success');
+        elements.feedback.textContent = i18n.t('success');
+        elements.input.classList.remove('is-invalid');
+        elements.input.disabled = false;
+        elements.submit.disabled = false;
+    } else if (state.loadingProcess.status === 'loading') {
+        elements.input.disabled = true;
+        elements.submit.disabled = true;
+    } else if (state.loadingProcess.status === 'failed') {
+        elements.input.classList.add('is-invalid');
+        elements.input.disabled = false;
+        elements.submit.disabled = false;
+    }
+};
 
+const handleModalWindow = (state, elements) => {
+    const postForModalWindow = state.posts.find((post) => post.id === state.modalPost);
+    elements.modalTitle.textContent = postForModalWindow.title;
+    elements.modalDescription.textContent = postForModalWindow.description;
+    elements.modalFullArticle.setAttribute('href', postForModalWindow.link);
+}
 
 
 export default (state, elements, i18n) => {
@@ -128,8 +161,16 @@ export default (state, elements, i18n) => {
                 handlePosts(state, elements, i18n);
                 break;
             }
+            case 'modalPost': {
+                handleModalWindow(state, elements);
+                break;
+            }
+            case 'loadingProcess': {
+                handleLoadingProcess(state, elements, i18n);
+                break;
+            }
         }
-    })
+    });
 
     return watchedState;
 }
