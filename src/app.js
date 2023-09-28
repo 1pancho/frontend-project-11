@@ -71,7 +71,7 @@ export default () => {
                 valid: false,
                 error: error.message.key,
             };
-        } else if (error.parsingError) {
+        } else if (error.isParsingError) {
             watchedState.loadingProcess = {
                 valid: false,
                 error: 'errors.parsingError'
