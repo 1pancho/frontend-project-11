@@ -92,7 +92,7 @@ const handlePosts = (state, elements) => {
         if (state.viewPosts.includes(post.postId)) {
             link.classList.add('fw-normal', 'link-secondary');
         } else {
-            link.classList.add('fw-blod');
+            link.classList.add('fw-bold');
         }
 
         const button = document.createElement('button');
