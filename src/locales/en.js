@@ -10,11 +10,11 @@ export default {
         success: 'RSS uploaded successfully',
         
         errors: {
-            default: 'Something went wrong',
+            unknownError: 'Something went wrong',
             emptyInput: 'Must not be empty',
             invalidUrl: 'The link must be valid URL',
             exist: 'RSS already exists',
-            noRSS: 'The resource does not contain valid RSS',
+            parsingError: 'The resource does not contain valid RSS',
             networkError: 'Network error'
         },
     },

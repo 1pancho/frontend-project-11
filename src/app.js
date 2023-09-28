@@ -16,7 +16,7 @@ export default () => {
         posts: [],        // Массив постов (объекты с информацией о постах)
         form: {
           error: null,    // Ошибка формы, если есть
-          valid: false,   // Валидность формы (по умолчанию невалидна)
+          valid: null,   // Валидность формы (по умолчанию невалидна)
         },
         loadingProcess: {
             status: 'idle',
@@ -24,7 +24,6 @@ export default () => {
         },
         modalPost: null,  // Идентификатор отображаемого модального поста (по умолчанию null)
         viewPosts: [],    // Массив идентификаторов просматриваемых постов
-        loadingProcess: 'idle',       // Состояние загрузки (по умолчанию 'ok')
       };
 
     const elements = {
@@ -50,7 +49,7 @@ export default () => {
                 url: () => ({ key: 'errors.invalidUrl', validationError: true }),
             },
             mixed: {
-                required: () => ({ key: 'errros.default', validationError: true }),
+                required: () => ({ key: 'errors.emptyInput', validationError: true }),
                 notOneOf: () => ({ key: 'errors.exist', validationError: true }),
             },
         });    
@@ -70,13 +69,23 @@ export default () => {
             // console.log(error.message);
             watchedState.form = {
                 valid: false,
-                error: error
+                error: error.message.key,
             };
-        } else if (error.message.parsingError) {
-            watchedState.form = {
+        } else if (error.parsingError) {
+            watchedState.loadingProcess = {
                 valid: false,
-                error: error
+                error: 'errors.parsingError'
             };
+        } else if (error.message.networkError) {
+            watchedState.loadingProcess = {
+                status: 'failed',
+                error: 'errors.networkError',
+            }
+        } else {
+            watchedState.loadingProcess = {
+                status: 'failed',
+                error: 'errors.unknownError'
+            }
         }
     };
     
@@ -128,8 +137,8 @@ export default () => {
 
         validateUrl(url, alreadyAddedLinks)
             .then(() => {
-                watchedState.loadingProcess = 'loading';
-                watchedState.form.valid = true;
+                watchedState.loadingProcess = { status: 'loading' };
+                watchedState.form = { valid: true, error: null };
                 return axios.get(getProxyUrl(url));
             })
             .then((response) => {
@@ -138,7 +147,7 @@ export default () => {
                 const parsingResults = parse(data);
                 // console.log(parsingResults)
                 const { flowTitle, flowDescription, posts } = parsingResults;
-                console.log(posts)
+                // console.log(posts)
                 const feed = {
                     url,
                     id: _.uniqueId(),
@@ -155,10 +164,11 @@ export default () => {
                 watchedState.feeds.unshift(feed);
                 watchedState.posts.unshift(...post);
 
-                watchedState.loadingProcess = 'idle';
+                watchedState.loadingProcess = { status: 'idle', error: null };
                 watchedState.form = { error: null, valid: true };
             })
             .catch((error) =>{
+                console.log(error)
                 errorHandler(error)
             });
         })

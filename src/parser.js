@@ -6,6 +6,8 @@ const parse = (RSS) => {
     if (errorNode) {
         const errorText = errorNode.textContent;
         const parsingError = new Error(`XML parsing error: ${errorText}`);
+        parsingError.isParsingError = true;
+        console.log(errorNode)
         throw parsingError;
     }
 

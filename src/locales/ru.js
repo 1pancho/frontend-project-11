@@ -11,11 +11,11 @@ export default {
         
         
         errors: {
-            default: 'Что-то пошло не так',
+            unknownError: 'Что-то пошло не так',
             emptyInput: 'Не должно быть пустым',
             invalidUrl: 'Ссылка должна быть валидным URL',
             exist: 'RSS уже существует',
-            noRSS: 'Ресурс не содержит валидный RSS',
+            parsingError: 'Ресурс не содержит валидный RSS',
             networkError: 'Ошибка сети'
         },
     },

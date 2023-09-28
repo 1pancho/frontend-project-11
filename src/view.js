@@ -5,16 +5,16 @@ const handleForm = (state, elements, i18n) => {
     if (state.form.error) {
         elements.feedback.classList.add('text-danger');
         elements.feedback.classList.remove('text-success');
-        const errorMessage = i18n.t(state.form.error.message.key);
-        elements.feedback.textContent = errorMessage;
+        // const errorMessage = i18n.t(state.form.error.message.key);
+        elements.feedback.textContent = i18n.t(state.form.error);
         // console.log('Error key:', state.form.error.message.key);
     } 
     if (state.form.valid) {
         elements.input.classList.remove('is-invalid');
-        elements.feedback.classList.remove('text-danger');
-        elements.feedback.classList.add('text-success');
+        // elements.feedback.classList.remove('text-danger');
+        // elements.feedback.classList.add('text-success');
 
-        elements.feedback.textContent = i18n.t('success')
+        // elements.feedback.textContent = i18n.t('success')
     } else {
         elements.input.classList.add('is-invalid');
     }
@@ -118,8 +118,9 @@ const handleLoadingProcess = (state, elements, i18n) => {
     }
     if (state.loadingProcess.status === 'idle') {
         elements.input.value = '';
-        elements.classList.remove('text-danger');
-        elements.classList.add('text-success');
+ 
+        elements.feedback.classList.remove('text-danger');
+        elements.feedback.classList.add('text-success');
         elements.feedback.textContent = i18n.t('success');
         elements.input.classList.remove('is-invalid');
         elements.input.disabled = false;
