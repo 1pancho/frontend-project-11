@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "@hexlet/code",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "type": "module",
   "private": true,
   "scripts": {
