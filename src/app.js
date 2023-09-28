@@ -76,7 +76,7 @@ export default () => {
                 status: 'failed',
                 error: 'errors.parsingError'
             };
-        } else if (error.message.isAxiosError) {
+        } else if (error.isAxiosError) {
             watchedState.loadingProcess = {
                 status: 'failed',
                 error: 'errors.networkError',
