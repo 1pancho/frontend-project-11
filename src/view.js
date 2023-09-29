@@ -21,7 +21,7 @@ const handleForm = (state, elements, i18n) => {
 };
 
 const handleFeeds = (state, elements) => {
-    console.log('Feeds:', state.feeds); // Вывод состояния feeds
+    // console.log('Feeds:', state.feeds);
     console.log('Posts:', state.posts);
     elements.feedsDisplay.innerHTML = '';
     const feedsCard = document.createElement('div');
@@ -60,7 +60,7 @@ const handleFeeds = (state, elements) => {
 
 const handlePosts = (state, elements) => {
     //  console.log('Feeds:', state.feeds); // Вывод состояния feeds
-    // console.log('Posts:', state.posts);
+    console.log('Posts:', state.posts);
     elements.postsDisplay.innerHTML = '';
 
     const postsCard = document.createElement('div');
@@ -84,16 +84,17 @@ const handlePosts = (state, elements) => {
         postContainer.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
         const link = document.createElement('a');
-        link.textContent = post.title;
-        link.setAttribute('href', post.link);
-        link.setAttribute('postId', post.id);
-        link.setAttribute('target', '_blank');
-
-        if (state.viewPosts.includes(post.postId)) {
+        // console.log(state.viewPosts);
+        if (state.viewPosts.includes(post.id)) {
             link.classList.add('fw-normal', 'link-secondary');
         } else {
             link.classList.add('fw-bold');
         }
+        link.textContent = post.title;
+        link.setAttribute('href', post.link);
+        link.setAttribute('id', post.id);
+        link.setAttribute('target', '_blank');
+   
 
         const button = document.createElement('button');
         button.type = 'button';
@@ -136,10 +137,16 @@ const handleLoadingProcess = (state, elements, i18n) => {
 };
 
 const handleModalWindow = (state, elements) => {
-    const postForModalWindow = state.posts.find((post) => post.id === state.modalPost);
-    elements.modalTitle.textContent = postForModalWindow.title;
-    elements.modalDescription.textContent = postForModalWindow.description;
+    const postForModalWindow = state.posts.find((post) => 
+        // console.group(post.id, state.modalPost)
+        post.id === state.modalPost
+    );
     elements.modalFullArticle.setAttribute('href', postForModalWindow.link);
+    console.log(postForModalWindow)
+    elements.modalTitle.textContent = postForModalWindow.title;
+    console.log(postForModalWindow.title)
+
+    elements.modalDescription.textContent = postForModalWindow.description;
 }
 
 

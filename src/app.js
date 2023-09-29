@@ -105,6 +105,7 @@ export default () => {
                         const data = response.data.contents;
                         // console.log(data);
                         const parsingResults = parse(data);
+                        console.log(parsingResults)
                         const { flowTitle, flowDescription, posts } = parsingResults;
 
                     const newPosts = _.differenceWith(posts, state.posts, (a, b) => a.title === b.title);
@@ -128,7 +129,7 @@ export default () => {
     const watchedState = watch(state, elements, i18n);
 
     postsRecheck(state);
-    console.log(elements.modalFullArticle)
+
     elements.form.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -168,17 +169,19 @@ export default () => {
                 watchedState.form = { error: null, valid: true };
             })
             .catch((error) =>{
-                console.log(error)
+                // console.log(error)
                 errorHandler(error)
             });
         })
         elements.postsDisplay.addEventListener('click', (e) => {
             const { target } = e;
-            console.log(target);
-            const id = target.getAttribute('postid');
-            console.log(id);
+            // console.log(target);
+            const id = target.getAttribute('id');
+            // console.log(id);
             watchedState.modalPost = id;
+            console.log(watchedState.modalPost)
             watchedState.viewPosts.push(id);
+            // console.log(watchedState.viewPosts);
         });
     });
 };         
