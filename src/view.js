@@ -22,7 +22,7 @@ const handleForm = (state, elements, i18n) => {
 
 const handleFeeds = (state, elements) => {
     // console.log('Feeds:', state.feeds);
-    console.log('Posts:', state.posts);
+    // console.log('Posts:', state.posts);
     elements.feedsDisplay.innerHTML = '';
     const feedsCard = document.createElement('div');
     feedsCard.classList.add('card', 'border-0');
@@ -109,6 +109,7 @@ const handlePosts = (state, elements) => {
     });
 
     elements.postsDisplay.append(postsCard);
+    console.log(postsCard)
 };
 
 const handleLoadingProcess = (state, elements, i18n) => {
@@ -142,9 +143,9 @@ const handleModalWindow = (state, elements) => {
         post.id === state.modalPost
     );
     elements.modalFullArticle.setAttribute('href', postForModalWindow.link);
-    console.log(postForModalWindow)
+    // console.log(postForModalWindow)
     elements.modalTitle.textContent = postForModalWindow.title;
-    console.log(postForModalWindow.title)
+    // console.log(postForModalWindow.title)
 
     elements.modalDescription.textContent = postForModalWindow.description;
 }

@@ -174,9 +174,10 @@ export default () => {
             });
         })
         elements.postsDisplay.addEventListener('click', (e) => {
+            
             const { target } = e;
             // console.log(target);
-            const id = target.getAttribute('id');
+            const id = target.getAttribute('postid');
             // console.log(id);
             watchedState.modalPost = id;
             console.log(watchedState.modalPost)
