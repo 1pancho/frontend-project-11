@@ -50,7 +50,7 @@ const handleFeeds = (state, elements) => {
         title.textContent = feed.title;
 
         const description = document.createElement('p');
-        description.classList.add('m-0', 'small', 'text-black-50');
+        description.classList.add('m-0', 'small', 'description', 'text-black-50');
         description.textContent = feed.description;
         feedContainer.append(title, description);
     });

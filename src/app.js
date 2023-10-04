@@ -122,7 +122,7 @@ export default () => {
         });
 
         Promise.all(promises).finally(() => {
-            setTimeout(() => postsRecheck(), 10000);
+            setTimeout(() => postsRecheck(), 5000);
         });
     };
 
