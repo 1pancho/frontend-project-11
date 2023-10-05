@@ -1,6 +1,5 @@
-/* eslint-disable no-param-reassign */
 import * as yup from 'yup';
-import 'bootstrap';
+// import 'bootstrap';
 import axios from 'axios';
 import _ from 'lodash';
 import i18next from 'i18next';
@@ -10,18 +9,18 @@ import resources from './locales/index.js';
 
 export default () => {
   const state = {
-    feeds: [], // Массив лент (объекты с информацией о лентах)
-    posts: [], // Массив постов (объекты с информацией о постах)
+    feeds: [], 
+    posts: [],
     form: {
-      error: null, // Ошибка формы, если есть
-      valid: null, // Валидность формы (по умолчанию невалидна)
+      error: null, 
+      valid: null,
     },
     loadingProcess: {
       status: 'idle',
       error: null,
     },
-    modalPost: null, // Идентификатор отображаемого модального поста (по умолчанию null)
-    viewPosts: [], // Массив идентификаторов просматриваемых постов
+    modalPost: null, 
+    viewPosts: [],
   };
 
   const elements = {
@@ -44,7 +43,7 @@ export default () => {
   }).then(() => {
     yup.setLocale({
       string: {
-        url: () => ({ key: 'errors.invalidUrl', validationError: true }),
+        url: 'errors.invalidUrl',
       },
       mixed: {
         required: () => ({ key: 'errors.emptyInput', validationError: true }),
@@ -52,12 +51,12 @@ export default () => {
       },
     });
 
-    const validateUrl = (url, feeds) => {
+    const validateUrl = (url, alreadyAddedLinks) => {
       const schema = yup
         .string()
         .required()
         .url()
-        .notOneOf(feeds);
+        .notOneOf(alreadyAddedLinks);
 
       return schema.validate(url);
     };
@@ -68,7 +67,7 @@ export default () => {
       if (error.message.validationError) {
         watchedState.form = {
           valid: false,
-          error: error.message.key,
+          error: error.message,
         };
       } else if (error.isParsingError) {
         watchedState.loadingProcess = {
@@ -132,7 +131,7 @@ export default () => {
 
       validateUrl(url, alreadyAddedLinks)
         .then(() => {
-          watchedState.loadingProcess = { status: 'loading' };
+          watchedState.loadingProcess = { status: 'loading', error: null };
           watchedState.form = { valid: true, error: null };
           return axios.get(getProxyUrl(url));
         })
@@ -166,8 +165,10 @@ export default () => {
     elements.postsDisplay.addEventListener('click', (e) => {
       const { target } = e;
       const id = target.getAttribute('postid');
-      watchedState.modalPost = id;
-      watchedState.viewPosts.push(id);
+      if (id) {
+        watchedState.modalPost = id;
+        watchedState.viewPosts.push(id);
+      }
     });
   });
 };

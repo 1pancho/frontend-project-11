@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import onChange from 'on-change';
 
 const handleForm = (state, elements, i18n) => {
@@ -15,7 +14,7 @@ const handleForm = (state, elements, i18n) => {
 };
 
 const handleFeeds = (state, elements) => {
-  elements.feedsDisplay.innerHTML = '';
+  elements.feedsDisplay.textContent = '';
   const feedsCard = document.createElement('div');
   feedsCard.classList.add('card', 'border-0');
 
@@ -105,22 +104,25 @@ const handleLoadingProcess = (state, elements, i18n) => {
     elements.feedback.classList.add('text-danger');
     elements.feedback.textContent = i18n.t(state.loadingProcess.error);
   }
-  if (state.loadingProcess.status === 'idle') {
-    elements.input.value = '';
-
-    elements.feedback.classList.remove('text-danger');
-    elements.feedback.classList.add('text-success');
-    elements.feedback.textContent = i18n.t('success');
-    elements.input.classList.remove('is-invalid');
-    elements.input.disabled = false;
-    elements.submit.disabled = false;
-  } else if (state.loadingProcess.status === 'loading') {
-    elements.input.disabled = true;
-    elements.submit.disabled = true;
-  } else if (state.loadingProcess.status === 'failed') {
-    elements.input.classList.add('is-invalid');
-    elements.input.disabled = false;
-    elements.submit.disabled = false;
+  switch(state.loadingProcess.status) {
+    case 'idle': {
+      elements.input.value = '';
+      elements.feedback.classList.remove('text-danger');
+      elements.feedback.classList.add('text-success');
+      elements.feedback.textContent = i18n.t('success');
+      elements.input.classList.remove('is-invalid');
+      elements.input.disabled = false;
+      elements.submit.disabled = false;
+    }
+    case 'loading': {
+      elements.input.disabled = true;
+      elements.submit.disabled = true;
+    }
+    case 'failed': {
+      elements.input.classList.add('is-invalid');
+      elements.input.disabled = false;
+      elements.submit.disabled = false;
+    }
   }
 };
 
