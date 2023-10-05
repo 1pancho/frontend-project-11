@@ -43,11 +43,11 @@ export default () => {
   }).then(() => {
     yup.setLocale({
       string: {
-        url: 'errors.invalidUrl',
+        url: { key: 'errors.invalidUrl', validationError: true },
       },
       mixed: {
-        required: 'errors.emptyInput',
-        notOneOf: 'errors.exist',
+        required: () => ({ key: 'errors.emptyInput', validationError: true }),
+        notOneOf: () => ({ key: 'errors.exist', validationError: true }),
       },
     });
 
@@ -64,11 +64,10 @@ export default () => {
     const watchedState = watch(state, elements, i18n);
 
     const errorHandler = (error) => {
-      console.error(error);
-      if (error.validationError) {
+      if (error.message.validationError) {
         watchedState.form = {
           valid: false,
-          error: error.message,
+          error: error.message.key,
         };
       } else if (error.isParsingError) {
         watchedState.loadingProcess = {
@@ -160,10 +159,7 @@ export default () => {
           watchedState.form = { error: null, valid: true };
         })
         .catch((error) => {
-          console.log(error.message);
-          console.log(error);
-          console.log(error.ValidationError);
-                    errorHandler(error);
+          errorHandler(error);
         });
     });
     elements.postsDisplay.addEventListener('click', (e) => {
