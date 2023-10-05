@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+
 import onChange from 'on-change';
 
 const handleForm = (state, elements, i18n) => {
@@ -114,16 +115,21 @@ const handleLoadingProcess = (state, elements, i18n) => {
       elements.input.classList.remove('is-invalid');
       elements.input.disabled = false;
       elements.submit.disabled = false;
+      break;
     }
     case 'loading': {
       elements.input.disabled = true;
       elements.submit.disabled = true;
+      break;
     }
     case 'failed': {
       elements.input.classList.add('is-invalid');
       elements.input.disabled = false;
       elements.submit.disabled = false;
+      break;
     }
+    default:
+      break;
   }
 };
 
