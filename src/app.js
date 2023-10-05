@@ -46,8 +46,8 @@ export default () => {
         url: 'errors.invalidUrl',
       },
       mixed: {
-        required: () => ({ key: 'errors.emptyInput', validationError: true }),
-        notOneOf: () => ({ key: 'errors.exist', validationError: true }),
+        required: 'errors.emptyInput',
+        notOneOf: 'errors.exist',
       },
     });
 
@@ -64,7 +64,8 @@ export default () => {
     const watchedState = watch(state, elements, i18n);
 
     const errorHandler = (error) => {
-      if (error.message.validationError) {
+      console.error(error);
+      if (error.validationError) {
         watchedState.form = {
           valid: false,
           error: error.message,
@@ -159,7 +160,10 @@ export default () => {
           watchedState.form = { error: null, valid: true };
         })
         .catch((error) => {
-          errorHandler(error);
+          console.log(error.message);
+          console.log(error);
+          console.log(error.ValidationError);
+                    errorHandler(error);
         });
     });
     elements.postsDisplay.addEventListener('click', (e) => {
