@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
+
 import * as yup from 'yup';
-// import 'bootstrap';
 import axios from 'axios';
 import _ from 'lodash';
 import i18next from 'i18next';
@@ -9,17 +10,17 @@ import resources from './locales/index.js';
 
 export default () => {
   const state = {
-    feeds: [], 
+    feeds: [],
     posts: [],
     form: {
-      error: null, 
+      error: null,
       valid: null,
     },
     loadingProcess: {
       status: 'idle',
       error: null,
     },
-    modalPost: null, 
+    modalPost: null,
     viewPosts: [],
   };
 

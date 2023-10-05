@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import onChange from 'on-change';
 
 const handleForm = (state, elements, i18n) => {
@@ -104,7 +105,7 @@ const handleLoadingProcess = (state, elements, i18n) => {
     elements.feedback.classList.add('text-danger');
     elements.feedback.textContent = i18n.t(state.loadingProcess.error);
   }
-  switch(state.loadingProcess.status) {
+  switch (state.loadingProcess.status) {
     case 'idle': {
       elements.input.value = '';
       elements.feedback.classList.remove('text-danger');
