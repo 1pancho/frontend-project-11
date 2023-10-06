@@ -4,8 +4,8 @@ export default {
       ru: 'Русский',
     },
     submit: 'Добавить',
-    feeds: 'Фиды',
-    posts: 'Посты',
+    feedsTitle: 'Фиды',
+    postsTitle: 'Посты',
     preview: 'Просмотр',
     success: 'RSS успешно загружен',
 

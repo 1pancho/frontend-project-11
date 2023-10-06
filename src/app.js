@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 import * as yup from 'yup';
 import axios from 'axios';
 import _ from 'lodash';
@@ -14,7 +12,7 @@ export default () => {
     posts: [],
     form: {
       error: null,
-      valid: null,
+      valid: true,
     },
     loadingProcess: {
       status: 'idle',
@@ -95,7 +93,8 @@ export default () => {
       return href;
     };
 
-    const postsRecheck = () => {
+    const updateInterval = 5000;
+    const updatePosts = () => {
       const promises = state.feeds.map((feed) => {
         const feedUrl = feed.url;
         return axios.get(getProxyUrl(feedUrl))
@@ -106,9 +105,10 @@ export default () => {
 
             const newPosts = _.differenceWith(posts, state.posts, (a, b) => a.title === b.title);
             const updatedPosts = newPosts.map((post) => {
-              post.id = _.uniqueId();
-              post.feedId = feed.id;
-              return post;
+              const updatePost = { ...post };
+              updatePost.id = _.uniqueId();
+              updatePost.feedId = feed.id;
+              return updatePost;
             });
             state.posts.unshift(...updatedPosts);
           })
@@ -118,11 +118,11 @@ export default () => {
       });
 
       Promise.all(promises).finally(() => {
-        setTimeout(() => postsRecheck(), 5000);
+        setTimeout(() => updatePosts(), updateInterval);
       });
     };
 
-    postsRecheck(state);
+    updatePosts(state);
 
     elements.form.addEventListener('submit', (e) => {
       e.preventDefault();

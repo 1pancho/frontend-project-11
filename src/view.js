@@ -1,22 +1,23 @@
-/* eslint-disable no-param-reassign */
-
 import onChange from 'on-change';
 
 const handleForm = (state, elements, i18n) => {
+  const updateElements = { ...elements };
   if (state.form.error) {
-    elements.feedback.classList.add('text-danger');
-    elements.feedback.classList.remove('text-success');
-    elements.feedback.textContent = i18n.t(state.form.error);
+    updateElements.feedback.classList.add('text-danger');
+    updateElements.feedback.classList.remove('text-success');
+    updateElements.feedback.textContent = i18n.t(state.form.error);
   }
   if (state.form.valid) {
-    elements.input.classList.remove('is-invalid');
+    updateElements.input.classList.remove('is-invalid');
   } else {
-    elements.input.classList.add('is-invalid');
+    updateElements.input.classList.add('is-invalid');
   }
+  return updateElements;
 };
 
-const handleFeeds = (state, elements) => {
-  elements.feedsDisplay.textContent = '';
+const handleFeeds = (state, elements, i18n) => {
+  const updateElements = { ...elements };
+  updateElements.feedsDisplay.textContent = '';
   const feedsCard = document.createElement('div');
   feedsCard.classList.add('card', 'border-0');
 
@@ -26,7 +27,7 @@ const handleFeeds = (state, elements) => {
 
   const feedsTitle = document.createElement('h2');
   feedsTitle.classList.add('card-title', 'h4');
-  feedsTitle.textContent = 'Фиды';
+  feedsTitle.textContent = i18n.t('feedsTitle');
   feedsTitleContainer.append(feedsTitle);
 
   const feedsList = document.createElement('ul');
@@ -48,11 +49,13 @@ const handleFeeds = (state, elements) => {
     feedContainer.append(title, description);
   });
 
-  elements.feedsDisplay.append(feedsCard);
+  updateElements.feedsDisplay.append(feedsCard);
+  return updateElements;
 };
 
-const handlePosts = (state, elements) => {
-  elements.postsDisplay.innerHTML = '';
+const handlePosts = (state, elements, i18n) => {
+  const updateElements = { ...elements };
+  updateElements.postsDisplay.textContent = '';
 
   const postsCard = document.createElement('div');
   postsCard.classList.add('card', 'border-0');
@@ -63,7 +66,7 @@ const handlePosts = (state, elements) => {
 
   const postsTitle = document.createElement('h2');
   postsTitle.classList.add('card-title', 'h4');
-  postsTitle.textContent = 'Посты';
+  postsTitle.textContent = i18n.t('postsTitle');
   postsTitleContainer.append(postsTitle);
 
   const postsList = document.createElement('ul');
@@ -97,47 +100,53 @@ const handlePosts = (state, elements) => {
     postsList.append(postContainer);
   });
 
-  elements.postsDisplay.append(postsCard);
+  updateElements.postsDisplay.append(postsCard);
+  return updateElements;
 };
 
 const handleLoadingProcess = (state, elements, i18n) => {
+  const updateElements = { ...elements };
+
   if (state.loadingProcess.error) {
-    elements.feedback.classList.remove('text-success');
-    elements.feedback.classList.add('text-danger');
-    elements.feedback.textContent = i18n.t(state.loadingProcess.error);
+    updateElements.feedback.classList.remove('text-success');
+    updateElements.feedback.classList.add('text-danger');
+    updateElements.feedback.textContent = i18n.t(state.loadingProcess.error);
   }
   switch (state.loadingProcess.status) {
     case 'idle': {
-      elements.input.value = '';
-      elements.feedback.classList.remove('text-danger');
-      elements.feedback.classList.add('text-success');
-      elements.feedback.textContent = i18n.t('success');
-      elements.input.classList.remove('is-invalid');
-      elements.input.disabled = false;
-      elements.submit.disabled = false;
+      updateElements.input.value = '';
+      updateElements.feedback.classList.remove('text-danger');
+      updateElements.feedback.classList.add('text-success');
+      updateElements.feedback.textContent = i18n.t('success');
+      updateElements.input.classList.remove('is-invalid');
+      updateElements.input.disabled = false;
+      updateElements.submit.disabled = false;
       break;
     }
     case 'loading': {
-      elements.input.disabled = true;
-      elements.submit.disabled = true;
+      updateElements.input.disabled = true;
+      updateElements.submit.disabled = true;
       break;
     }
     case 'failed': {
-      elements.input.classList.add('is-invalid');
-      elements.input.disabled = false;
-      elements.submit.disabled = false;
+      updateElements.input.classList.add('is-invalid');
+      updateElements.input.disabled = false;
+      updateElements.submit.disabled = false;
       break;
     }
     default:
       break;
   }
+  return updateElements;
 };
 
 const handleModalWindow = (state, elements) => {
+  const updateElements = { ...elements };
   const postForModalWindow = state.posts.find((post) => post.id === state.modalPost);
-  elements.modalFullArticle.setAttribute('href', postForModalWindow.link);
-  elements.modalTitle.textContent = postForModalWindow.title;
-  elements.modalDescription.textContent = postForModalWindow.description;
+  updateElements.modalFullArticle.setAttribute('href', postForModalWindow.link);
+  updateElements.modalTitle.textContent = postForModalWindow.title;
+  updateElements.modalDescription.textContent = postForModalWindow.description;
+  return updateElements;
 };
 
 export default (state, elements, i18n) => {
@@ -168,7 +177,7 @@ export default (state, elements, i18n) => {
         break;
       }
       default:
-        break;
+        throw new Error('Unknown error!');
     }
   });
 

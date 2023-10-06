@@ -4,8 +4,8 @@ export default {
       en: 'English',
     },
     submit: 'Add',
-    feeds: 'Feeds',
-    posts: 'Posts',
+    feedsTitle: 'Feeds',
+    postsTitle: 'Posts',
     preview: 'Preview',
     success: 'RSS uploaded successfully',
 
